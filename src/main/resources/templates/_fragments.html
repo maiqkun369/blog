@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--通用导航-->
+<nav class="ui inverted attached segment m-padded-tb-mini m-shadow-small" id="nav">
+    <div class="ui container">
+        <div class="ui inverted secondary stackable menu">
+            <h2 class="ui teal header item">MaのBlog</h2>
+            <a href="#" class="m-item item m-mobile-hide" th:href="@{/}" th:classappend="${isactive=='1'}?'active'"><i class="home icon"></i>首页</a>
+            <a href="#" class="m-item item m-mobile-hide" th:href="@{/types/-1}" th:classappend="${isactive=='2'}?'active'"><i class="idea icon"></i>分类</a>
+            <a href="#" class="m-item item m-mobile-hide" th:href="@{/archives}" th:classappend="${isactive=='3'}?'active'"><i class="clone icon"></i>归档</a>
+            <a href="#" class="m-item item m-mobile-hide" th:href="@{/tags/-1}" th:classappend="${isactive=='4'}?'active'"><i class="tags icon"></i>标签</a>
+            <a href="#" class="m-item item m-mobile-hide" th:href="@{/about}" th:classappend="${isactive=='5'}?'active'"><i class="info icon"></i>关于我</a>
+            <div class="right m-item item m-mobile-hide">
+                <form name="search" action="#" th:action="@{/search}" method="post" target="_blank">
+                    <div class="ui icon inverted transparent input">
+                        <input type="text" name="query" placeholder="Search...." th:value="${query}">
+                        <i onclick="document.forms['search'].submit()" class="search link icon"></i>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <a href="#" class="ui menu toggle black icon button m-top-right m-mobile-show">
+        <i class="sidebar icon"></i>
+    </a>
+</nav>
+<!--通用的JS-->
+<th:block  th:fragment="script">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/sematic.min.js"></script>
+    <script src="../static/js/activate-power-mode/activate-power-mode.js" th:src="@{/js/activate-power-mode/activate-power-mode.js}"></script>
+    <script>
+        $('.menu.toggle').click(function () {
+            $('.m-item').toggleClass('m-mobile-hide');
+        });
+        $('#newblog-container').load(/*[[@{/footer/newblog}]]*/"/footer/newblog");
+        /*activate文字输入效果*/
+        POWERMODE.colorful = true; // 火花各种颜色
+        POWERMODE.shake = true; // 打字屏幕颤抖效果  true开启，false关闭
+        document.body.addEventListener('input', POWERMODE);
+    </script>
+</th:block>
+<!--底部footer-->
+<footer id="footer" class="ui inverted vertical segment m-padded-tb-massiv">
+    <div class="ui center aligned container">
+        <div class="ui inverted divided stackable grid">
+            <div class="three wide column">
+                <div class="ui inverted link list">
+                    <div class="item">
+                        <img src="../static/images/wechat.png" th:src="@{/images/wechat.png}" class="ui rounded image" alt="" style="width: 110px">
+                    </div>
+                </div>
+            </div>
+            <div class="three wide column">
+                <h4 class="ui inverted header m-text-thin m-text-spaced ">最新博客</h4>
+                <div id="newblog-container">
+                    <div class="ui inverted link list" th:fragment="newblogList">
+                        <a href="#" th:href="@{/blog/{id}(id=${blog.id})}" target="_blank" class="item" th:each="blog:${newblogs}" th:text="${blog.title}">用户故事</a>
+                        <!--/*-->
+                        <a href="#" class="item">用户故事</a>
+                        <!--*/-->
+                    </div>
+                </div>
+            </div>
+            <div class="three wide column">
+                <h4 class="ui inverted header m-text-thin m-text-spaced ">联系我</h4>
+                <div class="ui inverted link list">
+                    <a href="#" class="item" th:text="#{index.email}">Email: 912569147@qq.com</a>
+                    <a href="#" class="item">QQ: 912569147</a>
+                </div>
+            </div>
+            <div class="seven wide column">
+
+                <div class="ui inverted link list">
+                    <h4 class="ui inverted header m-text-thin m-text-spaced ">Pion</h4>
+                    <p class="m-text-thin m-text-spaced m-opacity-mini">个人博客，分享与学习</p>
+                </div>
+            </div>
+        </div>
+        <div class="ui inverted section divider">
+        </div>
+        <p class="m-text-thin m-text-spaced m-opacity-tiny">Copyright 2019-2020 Pion Designed By Pion</p>
+    </div>
+
+</footer>
+<!--canvas鼠标移动粒子-->
+<th:block th:fragment="canvas-js">
+    <script>
+        var canvas = document.querySelector('canvas');
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        c = canvas.getContext('2d');
+
+        window.addEventListener('resize', function(){
+            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth;
+
+            initCanvas();
+        })
+
+        var mouse = {
+            x: undefined,
+            y: undefined
+        }
+        window.addEventListener('mousemove',
+            function (event) {
+                mouse.x = event.x;
+                mouse.y = event.y;
+                drawCircles();
+            }
+        )
+        window.addEventListener("touchmove",
+            function (event) {
+                let touch = event.touches[0];
+                mouse.x = touch.clientX;
+                mouse.y = touch.clientY;
+                drawCircles();
+            }
+        )
+
+        function Circle(x, y, radius, vx, vy, rgb, opacity, birth, life){
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+            this.minRadius = radius;
+            this.vx = vx;
+            this.vy = vy;
+            this.birth = birth;
+            this.life = life;
+            this.opacity = opacity;
+
+            this.draw = function() {
+                c.beginPath();
+                c.arc(this.x, this.y, this.radius, Math.PI * 2, false);
+                c.fillStyle = 'rgba(' + rgb +','+ this.opacity +')';
+                c.fill();
+            }
+
+            this.update = function(){
+                if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
+                    this.vx = -this.vx;
+                }
+
+                if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
+                    this.vy = -this.vy;
+                }
+
+                this.x += this.vx;
+                this.y += this.vy;
+
+                this.opacity = 1- (((frame - this.birth) * 1) / this.life);
+
+                if (frame > this.birth + this.life){
+                    for (let i = 0; i < circleArray.length; i++){
+                        if (this.birth == circleArray[i].birth && this.life == circleArray[i].life){
+                            circleArray.splice(i, 1);
+                            break;
+                        }
+                    }
+                } else{
+                    this.draw();
+                }
+            }
+
+        }
+
+        var circleArray = [];
+
+        function initCanvas() {
+            circleArray = [];
+        }
+
+        var colorArray = [
+            '355,85,80',
+            '9,80,100',
+            '343,81,45'
+        ]
+
+        function drawCircles(){
+            for (let i = 0; i < 6; i++) {
+                let radius = Math.floor(Math.random() * 4) + 2;
+                let vx = (Math.random() * 2) - 1;
+                let vy = (Math.random() * 2) - 1;
+                let spawnFrame = frame;
+                let rgb = colorArray[Math.floor(Math.random() * colorArray.length)];
+                let life = 100;
+                circleArray.push(new Circle(mouse.x, mouse.y, radius, vx, vy, rgb, 1, spawnFrame, life));
+
+            }
+        }
+
+        var frame = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            frame += 1;
+            c.clearRect(0, 0, innerWidth, innerHeight);
+            for (let i = 0; i < circleArray.length; i++ ){
+                circleArray[i].update();
+            }
+
+        }
+
+        initCanvas();
+        animate();
+
+        // This is just for demo purposes :
+        for (let i = 1; i < 110; i++) {
+            (function (index) {
+                setTimeout(function () {
+                    mouse.x = 100 + i * 10;
+                    mouse.y = 100;
+                    drawCircles();
+                }, i * 10);
+            })(i);
+        }
+    </script>
+    <canvas id="canvas" width="1290" height="340" style="position: fixed; top: 0px; left: 0px; pointer-events: none; z-index: 999999;"></canvas>
+</th:block>
+<th:block th:fragment="canvas-css">
+    <style>
+        body,
+        html{
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        body{background:#000;}
+
+        canvas{
+            position: absolute;
+            margin: 0;
+            padding: 0;
+            display: block; /*  ˉ\_(ツ)_/ˉ  */
+            touch-action: none;
+        }
+        h1{
+            position: absolute;
+            top: 50%;
+            left: 0;
+            margin: auto;
+            width: 100%;
+            text-align: center;
+            color:#fff;
+        }
+    </style>
+</th:block>
+</body>
+</html>

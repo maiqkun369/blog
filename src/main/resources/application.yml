@@ -1,0 +1,15 @@
+spring:
+  thymeleaf:
+    mode: HTML5
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+  messages:
+    basename: i18n/messages
+  profiles:
+    active: dev
+  mvc:
+    favicon:
+      enabled: false
+comment.avatar: /images/avatar.png
+
