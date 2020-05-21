@@ -9,7 +9,7 @@ import java.util.List;
 @Table(name = "t_blog")
 public class Blog {
     @Id
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     @Basic(fetch = FetchType.LAZY)

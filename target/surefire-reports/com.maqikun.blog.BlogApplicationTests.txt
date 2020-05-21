@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.maqikun.blog.BlogApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 18.927 s - in com.maqikun.blog.BlogApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.522 s - in com.maqikun.blog.BlogApplicationTests

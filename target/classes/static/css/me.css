@@ -1,5 +1,5 @@
 body{
-    background: url("../images/bg.png") ;
+    background: url("../images/bg.png") !important;
 }
 .m-padded-tb-mini{
     padding-top: 0.2em !important;

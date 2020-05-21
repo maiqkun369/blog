@@ -8,6 +8,7 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 logging:
   level:
     root: warn
